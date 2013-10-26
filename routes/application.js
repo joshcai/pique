@@ -1,13 +1,11 @@
 
-/*
- * GET users listing.
- */
- var UserProvider = require('../userprovider').UserProvider;
+var UserProvider = require('../userprovider').UserProvider;
 
 var userProvider = new UserProvider('localhost', 27017);
-var mongoose = require('mongoose');
-var User = mongoose.model('User');
 
+exports.index = function(req, res){
+  res.render('index', { title: 'Express' });
+};
 
 exports.signup = function(req, res){
   res.render('signup');
@@ -43,17 +41,6 @@ exports.doSignup = function(req, res){
 			error: error
 		});
 	}
-	var user = new User(req.body)
-	user.provider = 'local'
-	user.save(function (err) {
-	if (err) {
-	  return res.render('signup', {
-	    // errors: utils.errors(err.errors),
-	    user: user
-	  })
-	}
-
-	})
 
 };
 

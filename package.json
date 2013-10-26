@@ -1,13 +1,16 @@
 {
-  "name": "application-name",
+  "name": "pique",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "dependencies": {
     "express": "3.4.0",
     "jade": "0.35.0",
-    "less-middleware": "0.1.12"
+    "less-middleware": "0.1.12",
+    "passport": "0.1.17",
+    "colors": "0.6.2",
+    "mongoose":"3.6.20"
   }
 }
