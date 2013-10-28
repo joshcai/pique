@@ -21,6 +21,8 @@ fs.readdirSync(models_path).forEach(function (file) {
   if (~file.indexOf('.js')) require(models_path + '/' + file)
 })
 
+require('./config/passport')(passport, config)
+
 var app = express();
 
 // all environments
@@ -29,9 +31,9 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
+app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
-app.use(app.router);
 app.use(require('less-middleware')({dest: __dirname + '/public/css',
         src: __dirname + '/src/less',
         prefix: '/css'}));
@@ -42,8 +44,24 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+var mongoStore = require('connect-mongo')(express);
+var flash = require('connect-flash');
+
+
+app.use(express.session({
+	secret: 'thisisasecret',
+	store: new mongoStore({
+		url: config.db,
+		collection : 'sessions'
+	})
+}))
+
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use(flash())
+
+app.use(app.router);
 
 require('./config/routes')(app, passport)
 

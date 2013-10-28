@@ -21,8 +21,8 @@ module.exports = {
       name: 'Pique'
     },
     facebook: {
-      clientID: "APP_ID",
-      clientSecret: "APP_SECRET",
+      clientID: "618836808183542",
+      clientSecret: "12ce6c777d8289fd94860f0d8d635cf4",
       callbackURL: "http://localhost:3000/auth/facebook/callback"
     },
     twitter: {
