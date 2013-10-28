@@ -11,6 +11,11 @@ exports.signup = function(req, res){
   res.render('signup');
 };
 
+exports.logout = function(req, res){
+	req.logout()
+	res.redirect('/')
+}
+
 exports.doSignup = function(req, res){
 	var error = ''
 	if(req.param('username')===''||req.param('email')===''||req.param('password')===''||req.param('password2')==='')
@@ -33,8 +38,10 @@ exports.doSignup = function(req, res){
 	    user: user
 	  })
 	}
-	// todo: log in user here
-	res.redirect('/');
+	req.login(user, function(err){
+			if(err) return next(err)
+			return res.redirect('/')
+		})
 	})
 
 };
@@ -47,3 +54,16 @@ exports.doLogin = function(req, res){
 	res.redirect('/')
 
 };
+
+
+exports.user = function (req, res, next, id) {
+	console.log('asdfasdfasdf')
+  User
+    .findOne({ _id : id })
+    .exec(function (err, user) {
+      if (err) return next(err)
+      if (!user) return next(new Error('Failed to load User ' + id))
+      req.profile = user
+      next()
+    })
+}

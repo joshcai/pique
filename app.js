@@ -16,11 +16,13 @@ var mongoose = require('mongoose');
 
 mongoose.connect(config.db);
 
+
 var models_path = __dirname + '/models'
 fs.readdirSync(models_path).forEach(function (file) {
   if (~file.indexOf('.js')) require(models_path + '/' + file)
 })
 
+var User = mongoose.model('User');
 require('./config/passport')(passport, config)
 
 var app = express();
@@ -47,6 +49,10 @@ if ('development' == app.get('env')) {
 var mongoStore = require('connect-mongo')(express);
 var flash = require('connect-flash');
 
+app.use(function (req, res, next) {
+	res.locals.req = req;
+	next();
+});
 
 app.use(express.session({
 	secret: 'thisisasecret',

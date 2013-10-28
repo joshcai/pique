@@ -1,10 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  p What is up
-  a(href='/signup') signup 
-  a(href='/login') login 
-  a(href='/auth/facebook') facebook 
+	h1= title
+	p Welcome to #{title}
+	p What is up
+	if (req.isAuthenticated())
+		h1= req.user.username
+		a(href='/logout') logout
+	else
+		a(href='/signup') signup 
+		a(href='/login') login 
+		a(href='/auth/facebook') facebook 
 
