@@ -1,5 +1,6 @@
 var routes = require('../controllers/application');
 var user = require('../controllers/user');
+var question = require('../controllers/question');
 
 module.exports = function(app, passport){
 
@@ -24,4 +25,7 @@ module.exports = function(app, passport){
 		passport.authenticate('facebook', {
 		  	failureRedirect: '/login'
 		}), user.doLogin)	
+
+	app.get('/ask', question.ask);
+	app.post('/ask', question.doAsk);
 }

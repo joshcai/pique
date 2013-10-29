@@ -1,0 +1,38 @@
+extends layout
+
+block content
+	div.row
+		div.col-md-6.col-md-offset-3
+			h1= 'Ask'
+			if error
+				p= error
+			form(method="post")
+				div
+					span Question:
+					input.form-control(type="text", name="question", value=question)
+				div
+					span Answer 1:
+					input.form-control(type="text", name="answer[1]")
+				div
+					span Answer 2:
+					input.form-control(type="text", name="answer[2]")
+				div#add
+					span Add Answer:
+					input.form-control(type="text")
+				div.checkbox
+					input(name="multiple" type="checkbox") 
+					|Allow user to select multiple answers
+				input(type="submit")
+			a(href='/') Home
+
+block scripts
+	script(type='text/javascript').
+		var number = 3;
+		$('body').on('change','#add input', function(){
+			$(this).attr('name', 'answer['+number+']')
+			$("#add span").text('Answer '+number);
+			number++;
+			var total='<div id="add"><span>Add Answer</span><input type="text" class="form-control"></div>';
+
+			$("#add").after(total).removeAttr('id');
+		})

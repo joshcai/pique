@@ -6,9 +6,19 @@ block content
 	p What is up
 	if (req.isAuthenticated())
 		h1= req.user.username
-		a(href='/logout') logout
+		a(href='/logout') logout 
+		a(href='/ask') ask
 	else
 		a(href='/signup') signup 
 		a(href='/login') login 
 		a(href='/auth/facebook') facebook 
+	each question in questions
+		- var type = question.multiple ? 'checkbox' : 'radio'
+		h3= question.question
+		p= 'author: ' + question.authorId.username
+		- if(question.answers.length)
+			each answer in question.answers
+				input(type=type, name=question._id)
+				= ' ' + answer.answer
+				br 
 

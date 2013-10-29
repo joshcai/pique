@@ -40,7 +40,7 @@ module.exports = function (passport, config) {
   ))
 
   // use twitter strategy
-  passport.use(new TwitterStrategy({
+/*  passport.use(new TwitterStrategy({
       consumerKey: config.twitter.clientID,
       consumerSecret: config.twitter.clientSecret,
       callbackURL: config.twitter.callbackURL
@@ -66,7 +66,7 @@ module.exports = function (passport, config) {
       })
     }
   ))
-
+*/
   // use facebook strategy
   passport.use(new FacebookStrategy({
       clientID: config.facebook.clientID,
@@ -97,7 +97,7 @@ module.exports = function (passport, config) {
   ))
 
   // use google strategy
-  passport.use(new GoogleStrategy({
+/* passport.use(new GoogleStrategy({
       clientID: config.google.clientID,
       clientSecret: config.google.clientSecret,
       callbackURL: config.google.callbackURL
@@ -122,6 +122,6 @@ module.exports = function (passport, config) {
       })
     }
   ));
-
+*/
 
 }
