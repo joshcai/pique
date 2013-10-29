@@ -83,8 +83,8 @@ module.exports = {
     db:process.env.MONGOHQ_URL,
 
     facebook: {
-      clientID: "APP_ID",
-      clientSecret: "APP_SECRET",
+      clientID: "385209831609563",
+      clientSecret: "e35e7f9084be59641687ab8c2d044d87",
       callbackURL: "http://piqued.herokuapp.com/auth/facebook/callback"
     }
   }
