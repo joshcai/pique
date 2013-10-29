@@ -79,5 +79,13 @@ module.exports = {
       callbackURL: "http://localhost:3000/auth/linkedin/callback"
     }
   },
-  production: {}
+  production: {
+    db:process.env.MONGOHQ_URL,
+
+    facebook: {
+      clientID: "APP_ID",
+      clientSecret: "APP_SECRET",
+      callbackURL: "http://piqued.herokuapp.com/auth/facebook/callback"
+    }
+  }
 }
