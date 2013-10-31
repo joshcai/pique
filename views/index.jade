@@ -11,14 +11,31 @@ block content
 	else
 		a(href='/signup') signup 
 		a(href='/login') login 
-		a(href='/auth/facebook') facebook 
-	each question in questions
-		- var type = question.multiple ? 'checkbox' : 'radio'
-		h3= question.question
-		p= 'author: ' + question.authorId.username
-		- if(question.answers.length)
-			each answer in question.answers
-				input(type=type, name=question._id)
-				= ' ' + answer.answer
-				br 
+		a(href='/auth/facebook') facebook
+	div#questionContainer 
+		each question in questions
+			- var type = question.multiple ? 'checkbox' : 'radio'
+			h3= question.question
+			p= 'author: ' + question.authorId.username
+			- if(question.answers.length)
+				each answer in question.answers
+					input(type=type, name=question._id)
+					= ' ' + answer.answer
+					br 
 
+block scripts
+	script(src="/socket.io/socket.io.js")
+	script(type='text/javascript').
+		var socket = io.connect('http://localhost:3000');
+		// on document ready
+		$(function(){
+
+		});
+		$('body').on('change','#add input', function(){
+			$(this).attr('name', 'answer['+number+']')
+			$("#add span").text('Answer '+number);
+			number++;
+			var total='<div id="add"><span>Add Answer</span><input type="text" class="form-control"></div>';
+
+			$("#add").after(total).removeAttr('id');
+		})
