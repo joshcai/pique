@@ -29,7 +29,9 @@ block scripts
 		var socket = io.connect('http://localhost:3000');
 		// on document ready
 		$(function(){
-
+			$('#questionContainer').on('click', '#questionContainer input', function(){
+				socket.emit('answer', {})
+			})
 		});
 		$('body').on('change','#add input', function(){
 			$(this).attr('name', 'answer['+number+']')
