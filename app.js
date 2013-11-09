@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var express = require('express');
+var express = require('express.io');
 var passport = require('passport');
 var fs = require('fs');
 
@@ -26,6 +26,8 @@ var User = mongoose.model('User');
 require('./config/passport')(passport, config)
 
 var app = express();
+// express.io ?
+app.http().io();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -73,8 +75,9 @@ require('./config/routes')(app, passport)
 
 
 
-var server = http.createServer(app);
-var io = require('socket.io').listen(server);
-server.listen(app.get('port'));
+// var server = http.createServer(app);
+// var io = require('socket.io').listen(server);
+// server.listen(app.get('port'));
+app.listen(app.get('port'));
 
-require('./controllers/sockets.js')(io);
+// require('./controllers/sockets.js')(io);

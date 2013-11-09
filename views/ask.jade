@@ -2,28 +2,30 @@ extends layout
 
 block content
 	div.row
-		div.col-md-6.col-md-offset-3
-			h1= 'Ask'
+		div.col-md-4.centered.text-center
+			h1.bottom-margin20.top-margin0= 'Ask a Question'
 			if error
 				p= error
 			form(method="post")
 				div
-					span Question:
-					input.form-control(type="text", name="question", value=question)
-				div
-					span Answer 1:
-					input.form-control(type="text", name="answer[1]")
-				div
-					span Answer 2:
-					input.form-control(type="text", name="answer[2]")
-				div#add
-					span Add Answer:
-					input.form-control(type="text")
-				div.checkbox
+					//- span Question:
+					textarea.form-control(rows="3", name="question", placeholder="What's your question?")
+					//- input.form-control(type="text", name="question", placeholder="What's your question?", value=question)
+				br 
+				div.bottom-margin
+					//- span Answer 1:
+					input.form-control(type="text", placeholder="Answer 1", name="answer[1]")
+				div.bottom-margin
+					//- span Answer 2:
+					input.form-control(type="text", placeholder="Answer 2", name="answer[2]")
+				div#add.bottom-margin
+					//- span Add Answer:
+					input.form-control(type="text", placeholder="Add another answer...")
+				div.checkbox.text-left.bottom-margin20
 					input(name="multiple" type="checkbox") 
 					|Allow user to select multiple answers
-				input(type="submit")
-			a(href='/') Home
+				button(type="submit" class="btn btn-primary") Submit
+			//- a(href='/') Home
 
 block scripts
 	script(type='text/javascript').
@@ -32,7 +34,8 @@ block scripts
 			$(this).attr('name', 'answer['+number+']')
 			$("#add span").text('Answer '+number);
 			number++;
-			var total='<div id="add"><span>Add Answer</span><input type="text" class="form-control"></div>';
+			var total='<div id="add" class="bottom-margin"><input type="text" class="form-control" placeholder="Add another answer..."></div>';
 
 			$("#add").after(total).removeAttr('id');
+			$("#add input").focus();
 		})
