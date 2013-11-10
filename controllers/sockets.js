@@ -39,10 +39,25 @@ module.exports = function(io, mongoSessionStore){
 		})
 
 		socket.on('answer', function (data) {
-			// Answer.findOne({ '_id': data.answer_id}, function(err, answer){
+			Answer.findOne({ '_id': data.answer_id}, function(err, answer){
+				answer.answered.push(data.user_id)
+				answer.save(function(err)
+				{
+					if(err)
+					{
 
-			// })
+					}
+				})
+				console.log("answer"+answer)
+			})
 			Question.findOne({ '_id': data.question_id}, function(err, question){
+				question.answered.push(data.user_id)
+				question.save(function(err){
+					if(err)
+					{
+
+					}
+				})
 				console.log(question);
 			})
 			console.log(data);
