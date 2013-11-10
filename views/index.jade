@@ -20,38 +20,33 @@ block content
 				each question, index in questions
 					div.row
 						div.col-md-3.text-right
-							img.img-rounded.img-random(src="/img/p"+index+".jpg", width="70px", id=index)
+							img.img-rounded
 						div.col-md-9.text-left.question
 							- var type = question.multiple ? 'checkbox' : 'radio'
 							h3.topfix= question.question
 							//- p= 'author: ' + question.authorId.username
 							- if(question.answers.length)
 								each answer in question.answers
-									input(type=type, name=question._id)
+									input(type=type, name=question._id, value=answer._id)
 									= ' ' + answer.answer
 									br 
 
 block scripts
 	script(src="/socket.io/socket.io.js")
 	script(type='text/javascript').
-		var socket = io.connect('http://localhost:3000');
+		var socket = io.connect();
+		var session;
 		// on document ready
 		$(function(){
-			$('#questionContainer').on('click', '#questionContainer input', function(){
-				socket.emit('answer', {})
+			socket.emit('ready')
+			socket.on('sessiondata', function(data){
+				session = data;
 			})
-			$(".img-random").attr("src", 
-				function(i, val){
-				var hello = Math.floor(Math.random()*7)+1);
-				return "/img/p4.jpg"
-				// return val+"/img/p"+hello.toString()+".jpg"
-			});
-		});
-		$('body').on('change','#add input', function(){
-			$(this).attr('name', 'answer['+number+']')
-			$("#add span").text('Answer '+number);
-			number++;
-			var total='<div id="add"><span>Add Answer</span><input type="text" class="form-control"></div>';
-
-			$("#add").after(total).removeAttr('id');
+			//- $('#questionContainer').on('click', '#questionContainer input', function(){
+			//- 	console.log("clicked")
+			//- 	socket.emit('answer', {user: req.user.username})
+			//- })
+			$('#questionContainer input').click(function(){
+				socket.emit('answer', {user_id: session.user, question_id: $(this).attr("name"), answer_id: $(this).val()})
+			})
 		})

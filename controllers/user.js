@@ -57,7 +57,6 @@ exports.doLogin = function(req, res){
 
 
 exports.user = function (req, res, next, id) {
-	console.log('asdfasdfasdf')
   User
     .findOne({ _id : id })
     .exec(function (err, user) {

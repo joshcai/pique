@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var express = require('express.io');
+var express = require('express');
 var passport = require('passport');
 var fs = require('fs');
 
@@ -25,9 +25,9 @@ fs.readdirSync(models_path).forEach(function (file) {
 var User = mongoose.model('User');
 require('./config/passport')(passport, config)
 
-var app = express();
+var app = express()
 // express.io ?
-app.http().io();
+// var app = express().http().io();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -56,12 +56,14 @@ app.use(function (req, res, next) {
 	next();
 });
 
+var mongoSessionStore = new mongoStore({
+	url: config.db,
+	collection: 'sessions'
+})
+
 app.use(express.session({
 	secret: 'thisisasecret',
-	store: new mongoStore({
-		url: config.db,
-		collection : 'sessions'
-	})
+	store: mongoSessionStore 
 }))
 
 app.use(passport.initialize())
@@ -75,9 +77,9 @@ require('./config/routes')(app, passport)
 
 
 
-// var server = http.createServer(app);
-// var io = require('socket.io').listen(server);
-// server.listen(app.get('port'));
-app.listen(app.get('port'));
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+server.listen(app.get('port'));
+// app.listen(app.get('port'));
+require('./controllers/sockets.js')(io, mongoSessionStore);
 
-// require('./controllers/sockets.js')(io);
