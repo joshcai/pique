@@ -10,6 +10,7 @@ block content
 			br
 			if (req.isAuthenticated())
 				h1= req.user.username
+				h1= req.user._id
 				a(href='/logout') logout 
 				a(href='/ask') ask
 			else
@@ -17,7 +18,7 @@ block content
 				a(href='/login') login 
 				a(href='/auth/facebook') facebook
 			div#questionContainer 
-				each question, index in questions
+				each question in questions
 					div.row
 						div.col-md-3.text-right
 							img.img-rounded
@@ -25,12 +26,21 @@ block content
 							- var type = question.multiple ? 'checkbox' : 'radio'
 							h3.topfix= question.question
 							//- p= 'author: ' + question.authorId.username
-							- if(question.answers.length)
-								each answer in question.answers
-									input(type=type, name=question._id, value=answer._id)
-									= ' ' + answer.answer
-									br 
-
+							if((req.user) && (question.answered.indexOf(req.user._id) != -1))
+								if(question.answers.length)
+									each answer in question.answers
+										input(type=type, name=question._id, value=answer._id, checked=fs.inAnswers(answer.answered, req.user._id), disabled)
+										= ' ' + answer.answer
+										- if(answer.answered.length)
+											each user_answered in answer.answered
+												= ' ' + user_answered.username
+										br 
+							else
+								if(question.answers.length)
+									each answer in question.answers
+										input(type=type, name=question._id, value=answer._id)
+										= ' ' + answer.answer
+										br 		
 block scripts
 	script(src="/socket.io/socket.io.js")
 	script(type='text/javascript').

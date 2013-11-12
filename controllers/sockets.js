@@ -39,26 +39,31 @@ module.exports = function(io, mongoSessionStore){
 		})
 
 		socket.on('answer', function (data) {
-			Answer.findOne({ '_id': data.answer_id}, function(err, answer){
-				answer.answered.push(data.user_id)
-				answer.save(function(err)
-				{
-					if(err)
-					{
 
-					}
-				})
-				console.log("answer"+answer)
-			})
 			Question.findOne({ '_id': data.question_id}, function(err, question){
-				question.answered.push(data.user_id)
-				question.save(function(err){
-					if(err)
-					{
+				// if user hasn't answered this question
+				if(question.answered.indexOf(data.user_id) == -1)
+				{
+					question.answered.push(data.user_id)
+					question.save(function(err){
+						if(err)
+						{
 
-					}
-				})
-				console.log(question);
+						}
+					})
+					Answer.findOne({ '_id': data.answer_id}, function(err, answer){
+						answer.answered.push(data.user_id)
+						answer.save(function(err)
+						{
+							if(err)
+							{
+
+							}
+						})
+						console.log("answer"+answer)
+					})
+				}
+				
 			})
 			console.log(data);
 		});
