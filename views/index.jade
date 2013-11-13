@@ -6,11 +6,11 @@ block content
 	//- p What is up
 	div.row
 		div.col-md-6.centered.text-center
-			img(src="/img/logo.png", width="200px")
+			a(href="/")
+				img(src="/img/logo.png", width="200px")
 			br
 			if (req.isAuthenticated())
 				h1= req.user.username
-				h1= req.user._id
 				a(href='/logout') logout 
 				a(href='/ask') ask
 			else
@@ -19,28 +19,28 @@ block content
 				a(href='/auth/facebook') facebook
 			div#questionContainer 
 				each question in questions
-					div.row
-						div.col-md-3.text-right
-							img.img-rounded
-						div.col-md-9.text-left.question
-							- var type = question.multiple ? 'checkbox' : 'radio'
+					- var type = question.multiple ? 'checkbox' : 'radio'
+					if(req.user && (question.answered.indexOf(req.user._id) != -1))
+						div.text-left.question.answered(id=question._id)
 							h3.topfix= question.question
-							//- p= 'author: ' + question.authorId.username
-							if((req.user) && (question.answered.indexOf(req.user._id) != -1))
-								if(question.answers.length)
-									each answer in question.answers
-										input(type=type, name=question._id, value=answer._id, checked=fs.inAnswers(answer.answered, req.user._id), disabled)
-										= ' ' + answer.answer
-										- if(answer.answered.length)
-											each user_answered in answer.answered
-												= ' ' + user_answered.username
-										br 
-							else
-								if(question.answers.length)
-									each answer in question.answers
-										input(type=type, name=question._id, value=answer._id)
-										= ' ' + answer.answer
-										br 		
+							p= 'author: ' + question.authorId.username
+							if(question.answers.length)
+								each answer in question.answers
+									input(type=type, name=question._id, value=answer._id, checked=fs.inAnswers(answer.answered, req.user._id), disabled)
+									= ' ' + answer.answer
+									if(answer.answered.length)
+										each user_answered in answer.answered
+											= ' ' + user_answered.username
+									br 
+					else
+						div.text-left.question(id=question._id)
+							h3.topfix= question.question
+							p= 'author: ' + question.authorId.username
+							if(question.answers.length)
+								each answer in question.answers
+									input(type=type, name=question._id, value=answer._id)
+									= ' ' + answer.answer
+									br 		
 block scripts
 	script(src="/socket.io/socket.io.js")
 	script(type='text/javascript').

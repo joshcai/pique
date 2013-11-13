@@ -29,6 +29,9 @@ a {
   margin-bottom: 15px;
   box-shadow: 3px 3px 2px #AAA;
 }
+.answered {
+  background-color: #12E34F;
+}
 .img-rounded {
   margin-top: 5px;
   box-shadow: 2px 2px 1px #AAA;
