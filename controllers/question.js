@@ -9,7 +9,12 @@ var Answer = mongoose.model('Answer');
 
 
 exports.ask = function(req, res){
-  res.render('ask');
+	var query = User.findOne({'_id':req.user._id})
+			.populate('following', 'username')
+			// .sort({'created': -1})
+	query.exec(function(err, user){
+	  res.render('ask', {'user': user});
+	})
 };
 
 exports.doAsk = function(req, res){
@@ -32,9 +37,30 @@ exports.doAsk = function(req, res){
 		    question: question
 		  })
 		}
-		return res.redirect('/')
+		req.flash('first', 'true')
+		return res.redirect('/question/'+question._id)
 	})
 
 };
+
+exports.display = function(req, res){
+	var id = req.params.id;
+	var query = Question.findOne({'_id': id})
+							.populate('authorId', 'username')
+							.populate('answers')
+							.sort({'created': -1})
+	query.exec(function(err, questions){
+		var options = {
+			path: 'answers.answered',
+			select: 'username',
+			model: 'User'
+		}
+		if(err) return res.json(500);
+		Question.populate(questions, options, function(err, questions){
+			res.render('question', { title: 'Express', question: questions, first: req.flash('first')})
+		})
+	})
+
+}
 
 

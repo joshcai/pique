@@ -66,3 +66,27 @@ exports.user = function (req, res, next, id) {
       next()
     })
 }
+
+exports.followAll = function(req, res){
+
+	User.find({}, function(err, users){
+		for(var i=0; i < users.length; i++)
+		{
+			User.findOne({'_id': users[i]._id}, function(err, user){
+				User.find({'_id': {'$ne': user._id}}, function(err, users2){
+					user.following = new Array()
+					for(var j=0; j < users2.length; j++)
+					{
+						user.following.push(users2[j]._id)
+					}
+					user.save(function(err){
+						console.log(user)
+					});
+				})
+			})
+
+		}
+		// User.find({})
+	})
+	res.redirect('/')
+}

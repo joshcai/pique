@@ -50,18 +50,38 @@ module.exports = function(io, mongoSessionStore){
 						{
 
 						}
-					})
-					Answer.findOne({ '_id': data.answer_id}, function(err, answer){
-						answer.answered.push(data.user_id)
-						answer.save(function(err)
-						{
-							if(err)
+						Answer.findOne({ '_id': data.answer_id}, function(err, answer){
+							answer.answered.push(data.user_id)
+							answer.save(function(err)
 							{
+								if(err)
+								{
 
-							}
+								}
+								var query = Question.findOne({ '_id': question._id})
+								.populate('authorId', 'username')
+								.populate('answers')
+								query.exec(function(err, question_return){
+									var options = {
+										path: 'answers.answered',
+										select: 'username',
+										model: 'User'
+									}
+									if(err) return res.json(500);
+									Question.populate(question_return, options, function(err, question_return){
+										socket.emit("answer_return", question_return);
+										User.findOne({'_id': data.user_id}, function(err, user){
+											socket.broadcast.emit('answer_append', {question: question_return._id,
+																					answer: answer._id,
+																					username: user.username
+																					})
+										})
+									})
+								})
+							})
 						})
-						console.log("answer"+answer)
 					})
+
 				}
 				
 			})

@@ -21,9 +21,19 @@ block content
 				div#add.bottom-margin
 					//- span Add Answer:
 					input.form-control(type="text", placeholder="Add another answer...")
-				div.checkbox.text-left.bottom-margin20
-					input(name="multiple" type="checkbox") 
-					|Allow user to select multiple answers
+				//- div.checkbox.text-left.bottom-margin20
+				//- 	input(name="multiple" type="checkbox") 
+				//- 	|Allow user to select multiple answers
+				h3= "Send to..."
+				div.bottom-margin
+					label
+						input(type="checkbox", name="selected", value="all")
+						|Send to public
+				each following in user.following
+					div.bottom-margin
+						label
+							input(type="checkbox", name="selected", value=following._id)
+							=following.username
 				button(type="submit" class="btn btn-primary") Submit
 			//- a(href='/') Home
 

@@ -26,7 +26,8 @@ var QuestionSchema = new Schema({
     created:{ type: Date, default: Date.now},
   }],
   created: { type: Date, default: Date.now },
-  answered: [{ type: Schema.Types.ObjectId, ref:'User'}]
+  answered: [{ type: Schema.Types.ObjectId, ref:'User'}],
+  askedTo: [{ type: Schema.Types.ObjectId, ref:'User'}]
 })
 
 QuestionSchema.statics = {

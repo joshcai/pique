@@ -6,6 +6,10 @@ block content
 	//- p What is up
 	div.row
 		div.col-md-6.centered.text-center
+			if(first == 'true')
+				= first
+			else
+				= 'not first time'
 			a(href="/")
 				img(src="/img/logo.png", width="200px")
 			br
@@ -17,32 +21,23 @@ block content
 				a(href='/signup') signup 
 				a(href='/login') login 
 				a(href='/auth/facebook') facebook
-			div#questionContainer 
-				each question in questions
-					- var type = question.multiple ? 'checkbox' : 'radio'
-					if(req.user && (question.answered.indexOf(req.user._id) != -1))
-						div.text-left.question.answered(id=question._id)
-							h3.topfix= question.question
-							p= 'author: ' + question.authorId.username
-							if(question.answers.length)
-								each answer in question.answers
-									input(type=type, name=question._id, value=answer._id, checked=fs.inAnswers(answer.answered, req.user._id), disabled)
-									!= ' ' + answer.answer
-									span 
-										if(answer.answered.length)
-											each user_answered in answer.answered
-												= ' ' + user_answered.username
-									br 
-					else
-						div.text-left.question(id=question._id)
-							h3.topfix= question.question
-							p= 'author: ' + question.authorId.username
-							if(question.answers.length)
-								each answer in question.answers
-									input(type=type, name=question._id, value=answer._id)
-									!= ' ' + answer.answer
-									span
-									br 		
+			div#questionContainer
+				- var type = question.multiple ? 'checkbox' : 'radio'
+				= question
+				if(req.user)
+					div.text-left.question.answered(id=question._id)
+						h3.topfix= question.question
+						p= 'author: ' + question.authorId.username
+						if(question.answers.length)
+							each answer in question.answers
+								input(type=type, name=question._id, value=answer._id, disabled)
+								!= ' ' + answer.answer
+								span 
+									if(answer.answered.length)
+										each user_answered in answer.answered
+											= ' ' + user_answered.username
+								br 
+
 block scripts
 	script(src="/socket.io/socket.io.js")
 	script(type='text/javascript').
@@ -78,7 +73,4 @@ block scripts
 			//- 	console.log("clicked")
 			//- 	socket.emit('answer', {user: req.user.username})
 			//- })
-			$('#questionContainer input').click(function(){
-				socket.emit('answer', {user_id: session.user, question_id: $(this).attr("name"), answer_id: $(this).val()})
-			})
 		})

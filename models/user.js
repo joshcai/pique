@@ -18,6 +18,7 @@ var UserSchema = new Schema({
   facebook: {},
   twitter: {},
   google: {},
+  following: [{ type: Schema.Types.ObjectId, ref:'User'}]
 })
 
 UserSchema
