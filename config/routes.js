@@ -30,6 +30,8 @@ module.exports = function(app, passport){
 	app.post('/ask', question.doAsk);
 
 	app.get('/question/:id', question.display)
+	app.get('/follow/:id', question.follow)
+	app.post('/follow/:id', question.doFollow)
 
 	app.get('/followall', user.followAll)
 }

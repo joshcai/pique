@@ -8,6 +8,22 @@ html
 		meta(name="viewport", content="width=device-width")
 		meta(name="mobile-web-app-capable", content="yes")
 	body
-		block content
+		div.container
+			div.header
+				ul.nav.nav-pills.pull-right
+					li
+						a(href="/") Home
+					li
+						a(href="/ask") Ask
+					if (req.isAuthenticated())
+						li
+							a(href="/logout") Logout
+					else
+						li
+							a(href="/login") Login
+
+				a(href="/")
+					img(src="/img/logo.png" width="15%")
+			block content
 		script(src="http://code.jquery.com/jquery-1.10.1.min.js")
 		block scripts	

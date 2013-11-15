@@ -37,7 +37,25 @@ module.exports = function(io, mongoSessionStore){
 				}
 			}
 		})
-
+		socket.on('send', function (data){
+			console.log(data)
+			var query = Question.findOne({'_id': data.question})
+							.populate('authorId', 'username')
+							.populate('answers')
+							.sort({'created': -1})
+			query.exec(function(err, questions){
+				var options = {
+					path: 'answers.answered',
+					select: 'username',
+					model: 'User'
+				}
+				Question.populate(questions, options, function(err, questions){
+					console.log("sending this\n\n")
+					console.log(questions)
+					socket.broadcast.emit('question_append', {question: questions})	
+				})
+			})
+		})
 		socket.on('answer', function (data) {
 
 			Question.findOne({ '_id': data.question_id}, function(err, question){

@@ -24,12 +24,7 @@ block content
 				//- div.checkbox.text-left.bottom-margin20
 				//- 	input(name="multiple" type="checkbox") 
 				//- 	|Allow user to select multiple answers
-				h3= "Send to..."
-				each following, index in user.following
-					div.bottom-margin
-						label
-							input(type="checkbox", name="selected["+index+"]", value=following._id)
-							=" "+following.username
+				input(type="hidden", name="answer_id", value=answer)
 				button(type="submit" class="btn btn-primary") Submit
 			//- a(href='/') Home
 

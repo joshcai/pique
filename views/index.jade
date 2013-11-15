@@ -4,19 +4,16 @@ block content
 	//- h1= title
 	//- p Welcome to #{title}
 	//- p What is up
+	div.jumbotron
+		if (req.isAuthenticated())
+			h2= "Welcome, " + req.user.username
+		else
+			h2= "Welcome to Piqued"
+			p
+				a.btn.btn-lg.btn-success(href="/signup") Signup
+
 	div.row
-		div.col-md-6.centered.text-center
-			a(href="/")
-				img(src="/img/logo.png", width="200px")
-			br
-			if (req.isAuthenticated())
-				h1= req.user.username
-				a(href='/logout') logout 
-				a(href='/ask') ask
-			else
-				a(href='/signup') signup 
-				a(href='/login') login 
-				a(href='/auth/facebook') facebook
+		div.col-md-10.centered.text-center
 			div#questionContainer 
 				each question in questions
 					- var type = question.multiple ? 'checkbox' : 'radio'
@@ -34,15 +31,16 @@ block content
 												= ' ' + user_answered.username
 									br 
 					else
-						div.text-left.question(id=question._id)
-							h3.topfix= question.question
-							p= 'author: ' + question.authorId.username
-							if(question.answers.length)
-								each answer in question.answers
-									input(type=type, name=question._id, value=answer._id)
-									!= ' ' + answer.answer
-									span
-									br 		
+						if(req.user && (question.askedTo.indexOf(req.user._id) != -1))
+							div.text-left.question(id=question._id)
+								h3.topfix= question.question
+								p= 'author: ' + question.authorId.username
+								if(question.answers.length)
+									each answer in question.answers
+										input(type=type, name=question._id, value=answer._id)
+										!= ' ' + answer.answer
+										span
+										br 		
 block scripts
 	script(src="/socket.io/socket.io.js")
 	script(type='text/javascript').
@@ -74,11 +72,29 @@ block scripts
 				}
 				console.log(data);
 			})
+			socket.on('question_append', function(data){
+				var question = data.question
+				console.log("receiving!! \n\n")
+				console.log(data);
+				if(question.askedTo.indexOf(session.user) != -1)
+				{
+					var question_html='<div id="'+question._id+'" class="text-left question"><h3 class="topfix">'+question.question+'</h3><p>author: '+question.authorId.username+'</p>';
+					for(var i = 0; i < question.answers.length; i++)
+					{
+						question_html+='<input type="radio" name="'+question._id+'" value="'+question.answers[i]._id+'"> '+question.answers[i].answer+'<span></span><br>'
+					}
+					question_html+='</div>';
+					$("#questionContainer").prepend(question_html)
+				}
+			})
 			//- $('#questionContainer').on('click', '#questionContainer input', function(){
 			//- 	console.log("clicked")
 			//- 	socket.emit('answer', {user: req.user.username})
 			//- })
-			$('#questionContainer input').click(function(){
+			$('#questionContainer').on('click', 'input', function(){
 				socket.emit('answer', {user_id: session.user, question_id: $(this).attr("name"), answer_id: $(this).val()})
 			})
+			// $('#questionContainer input').click(function(){
+			// 	socket.emit('answer', {user_id: session.user, question_id: $(this).attr("name"), answer_id: $(this).val()})
+			// })
 		})

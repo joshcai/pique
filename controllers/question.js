@@ -30,6 +30,9 @@ exports.doAsk = function(req, res){
 		})
 		question.answers.push(ans)
 	}
+	for(var key in req.body.selected){
+		question.askedTo.push(req.body.selected[key])
+	}
 	question.save(function (err) {
 		if (err) {
 		  return res.render('ask', {
@@ -63,4 +66,36 @@ exports.display = function(req, res){
 
 }
 
+exports.follow = function(req, res){
+	var id = req.params.id;
+	res.render('follow', {'answer': id});
+}
 
+exports.doFollow = function(req, res){
+	Answer.findOne({'_id': req.body.answer_id}, function(err, answer){
+
+		var question = new Question(req.body)
+		question.authorId = req.user.id
+		for(var key in req.body.answer){
+			var ans = new Answer({answer: req.body.answer[key]})
+			ans.save(function(err){
+				if(err){
+					//handle error
+				}
+			})
+			question.answers.push(ans)
+		}
+		question.askedTo = answer.answered;
+		question.save(function (err) {
+			if (err) {
+			  return res.render('ask', {
+			    // errors: utils.errors(err.errors),
+			    question: question
+			  })
+			}
+			req.flash('first', 'true')
+			return res.redirect('/question/'+question._id)
+		})
+	})
+
+};

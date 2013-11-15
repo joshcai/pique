@@ -5,31 +5,21 @@ block content
 	//- p Welcome to #{title}
 	//- p What is up
 	div.row
-		div.col-md-6.centered.text-center
+		div.col-md-10.centered.text-center
 			if(first == 'true')
-				= first
-			else
-				= 'not first time'
-			a(href="/")
-				img(src="/img/logo.png", width="200px")
-			br
-			if (req.isAuthenticated())
-				h1= req.user.username
-				a(href='/logout') logout 
-				a(href='/ask') ask
-			else
-				a(href='/signup') signup 
-				a(href='/login') login 
-				a(href='/auth/facebook') facebook
+				div#first(data-value="first")
+
 			div#questionContainer
 				- var type = question.multiple ? 'checkbox' : 'radio'
-				= question
 				if(req.user)
 					div.text-left.question.answered(id=question._id)
 						h3.topfix= question.question
 						p= 'author: ' + question.authorId.username
 						if(question.answers.length)
 							each answer in question.answers
+								a(href="/follow/"+answer._id)
+									span.glyphicon.glyphicon-share-alt
+								!= "&nbsp;"
 								input(type=type, name=question._id, value=answer._id, disabled)
 								!= ' ' + answer.answer
 								span 
@@ -46,6 +36,11 @@ block scripts
 		// on document ready
 		$(function(){
 			socket.emit('ready')
+			if ($("#first").data("value") == "first")
+			{
+				console.log("sending!!\n\n")
+				socket.emit('send', {question: $("#questionContainer div").attr('id')})
+			}
 			socket.on('sessiondata', function(data){
 				session = data;
 			})
@@ -74,3 +69,5 @@ block scripts
 			//- 	socket.emit('answer', {user: req.user.username})
 			//- })
 		})
+
+
