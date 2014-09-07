@@ -1,3 +1,3 @@
-time tracker
+Pique
 ---
-to keep track of what you do and let friends see it as well
+prototype of an application that allows users to ask questions to each other with realtime results using Socket.IO
